@@ -1,0 +1,124 @@
+.custom-gantt {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+.gantt-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.gantt-header-row {
+  display: flex;
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+  font-weight: 600;
+}
+
+.task-id-header {
+  width: 80px;
+  padding: 12px;
+  border-right: 2px solid #e5e7eb;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.timeline-area {
+  flex: 1;
+}
+
+.gantt-row {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  min-height: 70px;
+  position: relative;
+}
+
+.task-id {
+  width: 80px;
+  padding: 15px;
+  border-right: 2px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  font-size: 14px;
+  color: #4f46e5;
+  font-weight: 600;
+  background: #f9fafb;
+}
+
+.timeline {
+  flex: 1;
+  position: relative;
+  padding: 15px 0;
+  background: white;
+}
+
+.task-bar {
+  position: absolute;
+  height: 40px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+  border: 2px solid #4f46e5;
+}
+
+.task-bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.date-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #1e1b4b;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.date-label.start {
+  margin-right: auto;
+}
+
+.date-label.end {
+  margin-left: auto;
+}
+
+.gantt-footer {
+  display: flex;
+  background: #f9fafb;
+  border-top: 2px solid #e5e7eb;
+  min-height: 40px;
+}
+
+.task-id-footer {
+  width: 80px;
+  border-right: 2px solid #e5e7eb;
+}
+
+.timeline-footer {
+  flex: 1;
+  position: relative;
+  padding: 10px 0;
+}
+
+.month-label {
+  position: absolute;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4f46e5;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}

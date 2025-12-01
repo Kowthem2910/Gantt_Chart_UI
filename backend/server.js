@@ -45,7 +45,8 @@ app.get('/api/tasks', (req, res) => {
 });
 
 app.post('/api/tasks', (req, res) => {
-  const newTask = { ...req.body, id: Date.now().toString() };
+  const maxId = tasks.length > 0 ? Math.max(...tasks.map(t => parseInt(t.id) || 0)) : 0;
+  const newTask = { ...req.body, id: (maxId + 1).toString() };
   tasks.push(newTask);
   res.json(newTask);
 });

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Gantt, ViewMode } from 'gantt-task-react';
-import 'gantt-task-react/dist/index.css';
 import axios from 'axios';
+import CustomGantt from './CustomGantt';
 import './App.css';
 
 const API_URL = 'http://localhost:3001/api/tasks';
@@ -15,7 +14,8 @@ const CustomTooltip = ({ task }) => {
       boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
       fontSize: '12px'
     }}>
-      <div><strong>{task.name}</strong></div>
+      <div><strong>ID: {task.name}</strong></div>
+      <div><strong>{task.displayName}</strong></div>
       <div>Start: {task.start.toLocaleDateString()}</div>
       <div>End: {task.end.toLocaleDateString()}</div>
       <div>Progress: {task.progress}%</div>
@@ -43,6 +43,8 @@ function App() {
     const { data } = await axios.get(API_URL);
     setTasks(data.map(t => ({
       ...t,
+      name: t.id,
+      displayName: t.name,
       start: new Date(t.start),
       end: new Date(t.end),
       type: 'task',
@@ -112,18 +114,12 @@ function App() {
 
       <div className="gantt-container">
         {tasks.length > 0 && (
-  <Gantt
-    tasks={tasks}
-    viewMode={ViewMode.Month}
-    onDateChange={handleDateChange}
-    onDoubleClick={handleEdit}
-    listCellWidth="170px"
-    columnWidth={80}
-    TooltipContent={CustomTooltip}
-    headerHeight={40}
-    rowHeight={70}
-  />
-)}
+          <CustomGantt
+            tasks={tasks}
+            onDateChange={handleDateChange}
+            onDoubleClick={handleEdit}
+          />
+        )}
       </div>
 
       <div className="task-list">
@@ -131,7 +127,7 @@ function App() {
         {tasks.map(task => (
           <div key={task.id} className="task-item">
             <div>
-              <strong>{task.name}</strong>
+              <strong>ID: {task.name} - {task.displayName}</strong>
               <p>{task.start.toLocaleDateString()} - {task.end.toLocaleDateString()}</p>
               <p>Progress: {task.progress}%</p>
             </div>

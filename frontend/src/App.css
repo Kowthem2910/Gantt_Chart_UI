@@ -165,4 +165,23 @@ button:hover {
   background: #4b5563;
 }
 
+/* Move month labels to bottom */
+.gantt-container :global(.calendar) {
+  flex-direction: column-reverse;
+}
 
+.gantt-container :global(.calendar-header) {
+  order: 2;
+}
+
+/* Style for ID column */
+.gantt-container :global(.task-list-header) {
+  font-weight: 600;
+}
+
+.gantt-container :global(.task-list-cell) {
+  font-family: monospace;
+  font-size: 13px;
+  color: #4f46e5;
+  font-weight: 600;
+}
