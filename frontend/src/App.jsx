@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
 import axios from 'axios';
@@ -36,6 +36,7 @@ function App() {
     progress: 0,
     dependencies: ''
   });
+  const ganttContainerRef = useRef(null);
 
   useEffect(() => {
     fetchTasks();
@@ -55,13 +56,17 @@ function App() {
     const { data } = await axios.get(API_URL);
     setTasks(data.map(t => {
       const startDate = new Date(t.start);
+      const endDate = new Date(t.end);
       const hour = startDate.getHours();
       const color = getColorByHour(hour);
       
+      const normalizedStart = new Date(2024, startDate.getMonth(), startDate.getDate(), startDate.getHours(), startDate.getMinutes());
+      const normalizedEnd = new Date(2024, endDate.getMonth(), endDate.getDate(), endDate.getHours(), endDate.getMinutes());
+      
       return {
         ...t,
-        start: startDate,
-        end: new Date(t.end),
+        start: normalizedStart,
+        end: normalizedEnd,
         type: 'task',
         styles: { 
           progressColor: color, 
@@ -129,6 +134,8 @@ function App() {
     setShowModal(false);
   };
 
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
   return (
     <div className="app">
       <header>
@@ -136,57 +143,70 @@ function App() {
         <button onClick={() => setShowModal(true)}>+ Add Task</button>
       </header>
 
-      <div className="gantt-container">
+      <div className="gantt-container" style={{ overflowX: 'auto' }} ref={ganttContainerRef}>
         {tasks.length > 0 && (
-          <Gantt
-            tasks={tasks}
-            viewMode={ViewMode.Hour}
-            onDateChange={handleDateChange}
-            onDoubleClick={handleEdit}
-            listCellWidth="170px"
-            columnWidth={80}
-            TooltipContent={CustomTooltip}
-            headerHeight={0}
-            rowHeight={70}
-            TaskListHeader={() => <div style={{display: 'flex', alignItems:'center'}}>Wafer ID</div>}
-            TaskListTable={({ tasks }) => (
-              <div>
-                {tasks.map((task, index) => (
-                  <div key={task.id} style={{ height: '70px', display: 'flex', alignItems: 'center', padding: '0 20px' }}>
-                    W{String(index + 1).padStart(3, '0')}
+          <div style={{ display: 'inline-block', width: '18480px' }}>
+            <Gantt
+              tasks={tasks}
+              viewMode={ViewMode.Hour}
+              onDateChange={handleDateChange}
+              onDoubleClick={handleEdit}
+              listCellWidth="170px"
+              columnWidth={60}
+              TooltipContent={CustomTooltip}
+              headerHeight={0}
+              rowHeight={70}
+              TaskListHeader={() => <div style={{display: 'flex', alignItems:'center'}}>Wafer ID</div>}
+              TaskListTable={({ tasks }) => (
+                <div>
+                  {tasks.map((task, index) => (
+                    <div key={task.id} style={{ height: '70px', display: 'flex', alignItems: 'center', padding: '0 20px' }}>
+                      W{String(index + 1).padStart(3, '0')}
+                    </div>
+                  ))}
+                </div>
+              )}
+            />
+            <div style={{ borderTop: '2px solid #e5e7eb', marginLeft: '80px' }}>
+              <div style={{ display: 'flex', borderBottom: '1px solid #e5e7eb' }}>
+                {months.map((month, i) => (
+                  <div key={i} style={{ display: 'flex' }}>
+                    <div style={{
+                      width: '1440px',
+                      textAlign: 'center',
+                      padding: '10px',
+                      backgroundColor: '#f8f9fa',
+                      fontWeight: 'bold',
+                      fontSize: '13px',
+                      color: '#333',
+                      borderRight: '1px solid #e5e7eb'
+                    }}>
+                      {month}
+                    </div>
+                    {i < 11 && <div style={{ width: '60px', backgroundColor: '#fff' }} />}
                   </div>
                 ))}
               </div>
-            )}
-          />
-        )}
-        {tasks.length > 0 && (
-          <div style={{ marginLeft: '170px', borderTop: '1px solid #e5e7eb' }}>
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '8px', 
-              backgroundColor: '#f8f9fa',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              color: '#333'
-            }}>
-              January 2024
-            </div>
-            <div style={{ 
-              display: 'flex',
-              fontSize: '11px',
-              color: '#666'
-            }}>
-              {Array.from({ length: 24 }, (_, i) => (
-                <div key={i} style={{ 
-                  width: '80px',
-                  textAlign: 'center',
-                  padding: '5px 0',
-                  borderRight: i < 23 ? '1px solid #f0f0f0' : 'none'
-                }}>
-                  {String(i).padStart(2, '0')}:00
-                </div>
-              ))}
+              <div style={{ display: 'flex' }}>
+                {months.map((month, monthIdx) => (
+                  <div key={monthIdx} style={{ display: 'flex' }}>
+                    {Array.from({ length: 24 }, (_, hourIdx) => (
+                      <div key={hourIdx} style={{
+                        width: '60px',
+                        textAlign: 'center',
+                        padding: '8px 0',
+                        borderRight: '1px solid #e5e7eb',
+                        fontWeight: '600',
+                        fontSize: '11px',
+                        color: '#555'
+                      }}>
+                        {`${String(hourIdx).padStart(2, '0')}:00`}
+                      </div>
+                    ))}
+                    {monthIdx < 11 && <div style={{ width: '60px', borderRight: '1px solid #e5e7eb' }} />}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
